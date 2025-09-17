@@ -1,0 +1,16 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}Delete Subject{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-20 bg-white shadow-md rounded-lg p-6 text-center">
+    <h1 class="text-2xl font-bold mb-4">Delete Subject</h1>
+    <p class="mb-6">Are you sure you want to delete <span class="font-semibold">{{ subject.name }}</span>?</p>
+
+    <form method="post" class="flex justify-center space-x-4">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Yes, Delete</button>
+        <a href="{% url 'subject_list' %}" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Cancel</a>
+    </form>
+</div>
+{% endblock %}

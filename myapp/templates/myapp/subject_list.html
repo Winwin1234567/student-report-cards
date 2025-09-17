@@ -1,0 +1,74 @@
+
+{% extends 'myapp/base.html' %}
+
+{% block title %}Subjects{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-8">
+
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Subjects</h1>
+        <a href="{% url 'subject_create' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+            ➕ Add Subject
+        </a>
+    </div>
+
+   
+   
+
+
+
+{% for subject in subjects %}
+<div class="bg-white shadow-md rounded-lg p-6 mb-6">
+
+    <!-- Card Header with Subject Name + Delete Button -->
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-semibold">{{ subject.name }}</h2>
+        <a href="{% url 'subject_delete' subject.pk %}" 
+           class="text-red-600 hover:text-red-800 font-medium">
+           🗑️ Delete
+        </a>
+    </div>
+
+    <!-- Table of Marks -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="py-2 px-4 border-b text-left">Student</th>
+                    <th class="py-2 px-4 border-b text-left">Roll</th>
+                    <th class="py-2 px-4 border-b text-left">Marks</th>
+                    <th class="py-2 px-4 border-b text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mark in subject.mark_set.all %}
+                <tr class="border-b hover:bg-gray-100">
+                    <td class="py-2 px-4">{{ mark.student.name }}</td>
+                    <td class="py-2 px-4">{{ mark.student.roll_number }}</td>
+                    <td class="py-2 px-4">{{ mark.marks_obtained }}</td>
+                    <td class="py-2 px-4 text-center space-x-2">
+                        <a href="{% url 'mark_update' mark.pk %}" class="text-blue-600 hover:underline">Edit</a>
+                        <a href="{% url 'mark_delete' mark.pk %}" class="text-red-600 hover:underline">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="py-2 text-center text-gray-500">
+                        No marks recorded for this subject yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% empty %}
+<p class="text-center text-gray-500">No subjects yet.</p>
+{% endfor %}
+
+<div class="text-center mt-4">
+    <a href="{% url 'student_list' %}" class="text-gray-600 hover:underline">Back to Students</a>
+</div>
+
+{% endblock %}

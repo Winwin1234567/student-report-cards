@@ -1,0 +1,31 @@
+
+{% extends "myapp/base.html" %}
+{% block title %}Delete {{ type }}{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-20 bg-white shadow-lg rounded-lg p-8 text-center">
+
+    <!-- Title -->
+    <h1 class="text-2xl font-bold text-red-600 mb-4">🗑️ Delete {{ type }}</h1>
+
+    <!-- Confirmation message -->
+    <p class="mb-6 text-gray-700">
+        Are you sure you want to delete 
+        <span class="font-semibold text-gray-900">"{{ object }}"</span>?
+    </p>
+
+    <!-- Buttons -->
+    <form method="post" class="flex justify-center gap-4">
+        {% csrf_token %}
+        <button type="submit"
+            class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg shadow">
+            ✅ Yes, Delete
+        </button>
+        <a href="javascript:history.back()"
+           class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium px-5 py-2 rounded-lg shadow">
+            ❌ Cancel
+        </a>
+    </form>
+
+</div>
+{% endblock %}

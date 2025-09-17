@@ -1,0 +1,28 @@
+
+{% extends 'myapp/base.html' %}
+
+{% block title %}Report Card{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-6 text-center">Students Report Cards</h1>
+
+<div class="flex flex-wrap gap-6 justify-center">
+    {% for student in students %}
+    <div class="bg-white shadow-lg rounded-lg p-6 w-80">
+        <h2 class="text-xl font-semibold mb-2">{{ student.name }}</h2>
+        <p class="text-gray-600 mb-4">Roll No: {{ student.roll_number }}</p>
+        <ul class="divide-y divide-gray-200">
+            {% for mark in  student.mark_set.all %}
+            <li class="py-2 flex justify-between">
+                <span>{{ mark.subject.name }}</span>
+                <span class="font-bold">{{ mark.marks_obtained }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+       
+    </div>
+    {% empty %}
+    <p>No students or marks added yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}My School{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- NAVBAR -->
+    <nav class="bg-blue-600 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+
+                <!-- Left: Icon + Brand -->
+                <div class="flex items-center space-x-3">
+                    <a href="{% url 'student_list' %}" class="flex items-center space-x-2">
+                        <!-- School Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M3 12l9-9 9 9M4 10v10h6V14h4v6h6V10" />
+                        </svg>
+                        <span class="text-xl font-bold tracking-wide">My School</span>
+                    </a>
+                </div>
+<!-- Right: Navigation -->
+<div class="flex items-center space-x-6">
+
+    <!-- Report Card link always visible -->
+    <a href="{% url 'report_card' %}" class="text-white font-semibold hover:underline">
+        Report Card
+    </a>
+
+    {% if user.is_authenticated and user.is_superuser %}
+        <!-- Admin-only links -->
+        <a href="{% url 'student_list' %}" class="hover:text-yellow-300">Students</a>
+        <a href="{% url 'subject_list' %}" class="hover:text-yellow-300">Subjects</a>
+        <a href="{% url 'mark_list' %}" class="hover:text-yellow-300">Marks</a>
+        <a href="{% url 'logout' %}" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded">
+            Logout
+        </a>
+    {% else %}
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded">
+                Logout
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded">
+                Login
+            </a>
+        {% endif %}
+    {% endif %}
+</div>
+
+               
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-6xl mx-auto p-6">
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+
+
+{% extends "myapp/base.html" %}
+{% block content %}
+{% load widget_tweaks %}
+<div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6 mt-6">
+
+    <!-- Heading -->
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">
+        ➕ Add Student + Mark
+    </h1>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- Existing Student Dropdown -->
+        <div>
+            <label for="id_existing_student" class="block font-medium text-gray-700 mb-1">
+                Choose Existing Student:
+            </label>
+            {{ form.existing_student|add_class:"border border-gray-300 rounded-lg w-full px-3 py-2" }}
+        </div>
+
+        <!-- Divider -->
+        <div class="flex items-center">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <span class="mx-3 text-gray-500 text-sm">OR create a new student</span>
+            <div class="flex-grow border-t border-gray-300"></div>
+        </div>
+
+        <!-- New Student Name -->
+        <div>
+            <label for="id_student_name" class="block font-medium text-gray-700 mb-1">
+                New Student Name:
+            </label>
+            {{ form.student_name|add_class:"border border-gray-300 rounded-lg w-full px-3 py-2" }}
+        </div>
+
+        <!-- Roll Number -->
+        <div>
+            <label for="id_roll_number" class="block font-medium text-gray-700 mb-1">
+                Roll Number:
+            </label>
+            {{ form.roll_number|add_class:"border border-gray-300 rounded-lg w-full px-3 py-2" }}
+        </div>
+
+        <!-- Subject Dropdown -->
+        <div>
+            <label for="id_subject" class="block font-medium text-gray-700 mb-1">
+                Subject:
+            </label>
+            {{ form.subject|add_class:"border border-gray-300 rounded-lg w-full px-3 py-2" }}
+        </div>
+
+        <!-- Marks -->
+        <div>
+            <label for="id_marks_obtained" class="block font-medium text-gray-700 mb-1">
+                Marks:
+            </label>
+            {{ form.marks_obtained|add_class:"border border-gray-300 rounded-lg w-full px-3 py-2" }}
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow">
+            💾 Save
+        </button>
+    </form>
+</div>
+{% endblock %}
+

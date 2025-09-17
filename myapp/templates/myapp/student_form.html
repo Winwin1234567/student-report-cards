@@ -1,0 +1,37 @@
+
+{% extends 'myapp/base.html' %}
+
+{% block title %}Student Form{% endblock %}
+
+{% block content %}
+{% load widget_tweaks %}
+<div class="max-w-lg mx-auto mt-10 bg-white shadow-md rounded-lg p-6">
+
+    <h1 class="text-2xl font-bold mb-6 text-center">
+        {% if form.instance.pk %}Edit Student{% else %}Add Student{% endif %}
+    </h1>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        
+        {% for field in form %}
+        <div>
+            <label class="block text-gray-700 font-semibold mb-1">{{ field.label }}</label>
+            {{ field|add_class:"w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" }}
+            {% if field.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ field.errors|striptags }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full">
+            Save
+        </button>
+    </form>
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'student_list' %}" class="text-gray-600 hover:underline">Back to Students</a>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+
+{% extends "myapp/base.html" %}
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 bg-white shadow-md rounded-lg p-6 text-center">
+
+    <!-- Heading -->
+    <h1 class="text-2xl font-bold text-red-600 mb-4">🗑️ Delete Mark</h1>
+
+    <!-- Confirmation Text -->
+    <p class="text-gray-700 mb-6">
+        Are you sure you want to delete the mark of 
+        <span class="font-semibold text-gray-900">{{ mark.student.name }}</span> 
+        for 
+        <span class="font-semibold text-gray-900">{{ mark.subject.name }}</span>?
+    </p>
+
+    <!-- Form Actions -->
+    <form method="post" class="space-x-3">
+        {% csrf_token %}
+        <button type="submit"
+            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow">
+            ✅ Yes, Delete
+        </button>
+        <a href="{% url 'mark_list' %}"
+           class="inline-block bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-lg shadow">
+            ❌ Cancel
+        </a>
+    </form>
+
+</div>
+{% endblock %}
