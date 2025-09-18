@@ -5,6 +5,14 @@ from django.contrib.auth.decorators import login_required
 
 from .models import *
 from .forms import SubjectForm,MarkForm,StudentMarkForm,StudentForm
+from django.db.models import Sum, Avg, Max, Min
+from django.db.models import Count
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from myapp.models import Student, Subject, Mark
+import json
+import re
+
 # Create your views here.
 def report_card(request):
     # Get all students and prefetch their marks to reduce queries
@@ -159,3 +167,80 @@ def mark_delete(request, pk):
         mark.delete()
         return redirect("mark_list")  # redirect back after deletion
     return render(request, "myapp/mark_confirm_delete.html", {"mark": mark})
+
+
+
+
+
+@login_required(login_url='login')
+@csrf_exempt
+def chatbot_api(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        message = data.get("message", "").lower()
+
+        # 1. "highest marks"
+        if "highest" in message:
+            top_student = (
+                Student.objects.annotate(total_marks=Sum('mark__marks_obtained'))
+                .order_by('-total_marks')
+                .first()
+            )
+            if top_student:
+                return JsonResponse({
+                    "reply": f"{top_student.name} has the highest total marks ({top_student.total_marks})."
+                })
+
+        # 2. "lowest marks"
+        if "lowest" in message:
+            low_student = (
+                Student.objects.annotate(total_marks=Sum('mark__marks_obtained'))
+                .order_by('total_marks')
+                .first()
+            )
+            if low_student:
+                return JsonResponse({
+                    "reply": f"{low_student.name} has the lowest total marks ({low_student.total_marks})."
+                })
+
+        # 3. "popular subjects"
+        if "popular" in message and "subject" in message:
+            from myapp.models import Subject  # import inside if needed
+            popular_subjects = (
+                Subject.objects.annotate(num_marks=Count('mark'))
+                .order_by('-num_marks')
+            )
+            if popular_subjects.exists():
+                top = popular_subjects.first()
+                return JsonResponse({
+                    "reply": f"The most popular subject is {top.name} with {top.num_marks} marks recorded."
+                })
+            return JsonResponse({"reply": "No subjects found."})
+
+        # 4. "marks of John"
+        if "marks of" in message:
+            name = message.replace("marks of", "").strip()
+            student = Student.objects.filter(name__icontains=name).first()
+            if student:
+                marks = student.mark_set.all()
+                if marks.exists():
+                    reply = ", ".join([f"{m.subject.name}: {m.marks_obtained}" for m in marks])
+                    return JsonResponse({"reply": f"Marks of {student.name}: {reply}"})
+                return JsonResponse({"reply": f"{student.name} has no marks recorded."})
+
+        # 5. "subjects of roll no"
+        if "subjects of roll" in message:
+            try:
+                roll_no = int(message.split()[-1])
+                student = Student.objects.filter(roll_number=roll_no).first()
+                if student:
+                    subjects = [m.subject.name for m in student.mark_set.all()]
+                    return JsonResponse({"reply": f"Subjects of {student.name}: {', '.join(subjects)}"})
+            except ValueError:
+                pass
+
+        # 6. Fallback
+        total_marks = Mark.objects.count()
+        return JsonResponse({"reply": f"There are {total_marks} marks recorded."})
+
+    return JsonResponse({"reply": "Invalid request."})

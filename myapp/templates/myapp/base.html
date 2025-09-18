@@ -105,6 +105,58 @@
 <main class="max-w-6xl mx-auto p-6">
     {% block content %}{% endblock %}
 </main>
+<!-- Floating Button -->
+<button onclick="toggleChat()" 
+    class="fixed bottom-4 right-4 bg-blue-600 text-white rounded-full w-12 h-12 shadow-lg z-50">
+💬
+</button>
+
+<!-- Chat Widget -->
+<div id="chat-widget" class="hidden fixed bottom-20 right-4 w-80 max-h-[70vh] bg-white border rounded-lg shadow-lg flex flex-col z-40">
+    <!-- Chat Messages -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+
+    <!-- Input Area -->
+    <div class="flex items-center gap-2 p-3 border-t bg-gray-50">
+        <input id="chat-input" type="text" placeholder="Type message..." 
+               class="flex-1 border rounded-lg p-2 focus:outline-none">
+        <button onclick="sendMessage()" 
+                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg">
+            Send
+        </button>
+    </div>
+</div>
+
+<script>
+function toggleChat() {
+    document.getElementById('chat-widget').classList.toggle('hidden');
+}
+
+async function sendMessage() {
+    let input = document.getElementById("chat-input");
+    let message = input.value.trim();
+    if (!message) return;
+
+    addMessage("You", message);
+    input.value = "";
+
+    let response = await fetch("{% url 'chatbot_api' %}", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: message})
+    });
+
+    let data = await response.json();
+    addMessage("Bot", data.reply);
+}
+
+function addMessage(sender, text) {
+    let chatBox = document.getElementById("chat-messages");
+    chatBox.innerHTML += `<p><strong>${sender}:</strong> ${text}</p>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+
 
 </body>
 </html>

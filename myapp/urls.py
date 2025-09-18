@@ -25,4 +25,6 @@ urlpatterns = [
 
     # Combined Student + Mark creation
     path("students/add-with-marks/", views.student_mark_add, name="student_mark_add"),
+
+     path("chatbot/", views.chatbot_api, name="chatbot_api"),
 ]
