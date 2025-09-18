@@ -172,7 +172,7 @@ def mark_delete(request, pk):
 
 
 
-@login_required(login_url='login')
+
 @csrf_exempt
 def chatbot_api(request):
     if request.method == "POST":
