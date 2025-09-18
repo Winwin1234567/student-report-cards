@@ -1,28 +1,31 @@
 
+
 {% extends 'myapp/base.html' %}
 
 {% block title %}Report Card{% endblock %}
 
 {% block content %}
-<h1 class="text-3xl font-bold mb-6 text-center">Students Report Cards</h1>
+<h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center">Students Report Cards</h1>
 
-<div class="flex flex-wrap gap-6 justify-center">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-8">
     {% for student in students %}
-    <div class="bg-white shadow-lg rounded-lg p-6 w-80">
-        <h2 class="text-xl font-semibold mb-2">{{ student.name }}</h2>
-        <p class="text-gray-600 mb-4">Roll No: {{ student.roll_number }}</p>
+    <div class="bg-white shadow-lg rounded-2xl p-4 sm:p-6 w-full max-w-sm mx-auto">
+        <h2 class="text-lg sm:text-xl font-semibold mb-2 text-gray-800">{{ student.name }}</h2>
+        <p class="text-gray-600 mb-4 text-sm sm:text-base">Roll No: {{ student.roll_number }}</p>
+
         <ul class="divide-y divide-gray-200">
-            {% for mark in  student.mark_set.all %}
-            <li class="py-2 flex justify-between">
-                <span>{{ mark.subject.name }}</span>
-                <span class="font-bold">{{ mark.marks_obtained }}</span>
+            {% for mark in student.mark_set.all %}
+            <li class="py-2 flex justify-between text-sm sm:text-base">
+                <span class="text-gray-700">{{ mark.subject.name }}</span>
+                <span class="font-bold text-gray-900">{{ mark.marks_obtained }}</span>
             </li>
+            {% empty %}
+            <li class="py-2 text-gray-500 text-center text-sm sm:text-base">No marks available</li>
             {% endfor %}
         </ul>
-       
     </div>
     {% empty %}
-    <p>No students or marks added yet.</p>
+    <p class="col-span-full text-center text-gray-500 text-lg">No students or marks added yet.</p>
     {% endfor %}
 </div>
 {% endblock %}
