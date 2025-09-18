@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
-
+from django.contrib.auth.decorators import login_required
 
 
 from .models import *
@@ -11,10 +11,12 @@ def report_card(request):
     students = Student.objects.prefetch_related('mark_set__subject')
     return render(request, "myapp/report_card.html", {"students": students})
 # ========== STUDENT CRUD ==========
+@login_required(login_url='login')
 def student_list(request):
     students = Student.objects.all()
     return render(request, "myapp/student_list.html", {"students": students})
 
+@login_required(login_url='login')
 def student_add(request):
     if request.method == "POST":
         form = StudentForm(request.POST)
@@ -24,7 +26,7 @@ def student_add(request):
     else:
         form = StudentForm()
     return render(request, "myapp/student_form.html", {"form": form})
-
+@login_required(login_url='login')
 def student_edit(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":
@@ -35,18 +37,18 @@ def student_edit(request, pk):
     else:
         form = StudentForm(instance=student)
     return render(request, "myapp/student_form.html", {"form": form})
-
+@login_required(login_url='login')
 def student_delete(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":
         student.delete()
         return redirect("student_list")
     return render(request, "myapp/student_confirm_delete.html", {"object": student, "type": "Student"})
-
+@login_required(login_url='login')
 def subject_list(request):
     subjects = Subject.objects.prefetch_related("mark_set__student")
     return render(request, "myapp/subject_list.html", {"subjects": subjects})
-
+@login_required(login_url='login')
 def subject_create(request):
     if request.method == "POST":
         form = SubjectForm(request.POST)
@@ -67,14 +69,14 @@ def subject_update(request, pk):
     else:
         form = SubjectForm(instance=subject)
     return render(request, "myapp/subject_form.html", {"form": form})
-
+@login_required(login_url='login')
 def subject_delete(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
     if request.method == "POST":
         subject.delete()
         return redirect("subject_list")
     return render(request, "myapp/subject_confirm_delete.html", {"subject": subject})
-
+@login_required(login_url='login')
 def mark_create(request):
     subject_id = request.GET.get("subject")
     if request.method == "POST":
@@ -85,6 +87,7 @@ def mark_create(request):
     else:
         form = MarkForm(initial={"subject": subject_id})
     return render(request, "myapp/mark_form.html", {"form": form})
+@login_required(login_url='login')
 def mark_update(request, pk):
     mark = get_object_or_404(Mark, pk=pk)
     if request.method == "POST":
@@ -95,7 +98,7 @@ def mark_update(request, pk):
     else:
         form = MarkForm(instance=mark)
     return render(request, "myapp/mark_form.html", {"form": form})
-
+@login_required(login_url='login')
 def mark_delete(request, pk):
     mark = get_object_or_404(Mark, pk=pk)
     if request.method == "POST":
@@ -105,7 +108,7 @@ def mark_delete(request, pk):
 
 
 
-
+@login_required(login_url='login')
 def student_mark_add(request):
     if request.method == "POST":
         form = StudentMarkForm(request.POST)
@@ -131,12 +134,12 @@ def student_mark_add(request):
         form = StudentMarkForm()
 
     return render(request, "myapp/student_mark_form.html", {"form": form})
-
+@login_required(login_url='login')
 def mark_list(request):
     marks = Mark.objects.select_related("student", "subject")
     return render(request, "myapp/mark_list.html", {"marks": marks})
 
-
+@login_required(login_url='login')
 # Edit (Update) a Mark
 def mark_update(request, pk):
     mark = get_object_or_404(Mark, pk=pk)
@@ -148,7 +151,7 @@ def mark_update(request, pk):
     else:
         form = MarkForm(instance=mark)
     return render(request, "myapp/mark_form.html", {"form": form})
-
+@login_required(login_url='login')
 # Delete a Mark
 def mark_delete(request, pk):
     mark = get_object_or_404(Mark, pk=pk)
