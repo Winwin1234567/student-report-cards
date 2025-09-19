@@ -173,6 +173,9 @@ def mark_delete(request, pk):
 
 
 
+
+
+
 @csrf_exempt
 def chatbot_api(request):
     if request.method == "POST":
@@ -205,7 +208,6 @@ def chatbot_api(request):
 
         # 3. "popular subjects"
         if "popular" in message and "subject" in message:
-            from myapp.models import Subject  # import inside if needed
             popular_subjects = (
                 Subject.objects.annotate(num_marks=Count('mark'))
                 .order_by('-num_marks')
@@ -217,7 +219,12 @@ def chatbot_api(request):
                 })
             return JsonResponse({"reply": "No subjects found."})
 
-        # 4. "marks of John"
+        # 4. "total students" or "how many students"
+        if "total students" in message or "how many students" in message:
+            total_students = Student.objects.count()
+            return JsonResponse({"reply": f"There are {total_students} students in the database."})
+
+        # 5. "marks of John"
         if "marks of" in message:
             name = message.replace("marks of", "").strip()
             student = Student.objects.filter(name__icontains=name).first()
@@ -228,7 +235,7 @@ def chatbot_api(request):
                     return JsonResponse({"reply": f"Marks of {student.name}: {reply}"})
                 return JsonResponse({"reply": f"{student.name} has no marks recorded."})
 
-        # 5. "subjects of roll no"
+        # 6. "subjects of roll no"
         if "subjects of roll" in message:
             try:
                 roll_no = int(message.split()[-1])
@@ -239,7 +246,7 @@ def chatbot_api(request):
             except ValueError:
                 pass
 
-        # 6. Fallback
+        # 7. Fallback
         total_marks = Mark.objects.count()
         return JsonResponse({"reply": f"There are {total_marks} marks recorded."})
 
